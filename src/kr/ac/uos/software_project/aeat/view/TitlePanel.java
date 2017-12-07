@@ -31,22 +31,31 @@ public class TitlePanel extends JPanel {
         super();        
         super.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         super.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        
+        super.setBackground(Color.BLACK);
         this.buttonActionListener = buttonActionListener;
         nameToTextField = new HashMap<>();
         nameToComboBox = new HashMap<>();
         initComponents();
     }
     
+    //함수이름: initComponents
+    //입력: 없음
+    //출력: 없음
+    //부수효과: 필요한 박스를 만들어서 패널에 추가한다.
     private void initComponents() {
-        this.add(createRecord("Title"));
+        this.add(createRecord("Title To Save"));
     }
     
+    //메소드명: createRecord
+    //입력: Box의 이름 name
+    //출력: Label과 TextField를 가진 box를 반환
+    //부수효과: 입력받은 name으로 만든 Lable과 TextField를 가진 box를 만든다
     private Box createRecord(String name) {
         Box box = Box.createHorizontalBox();
         box.setBorder(new EmptyBorder(5,10,5,10));
         JLabel label = new JLabel(name, JLabel.CENTER);
         label.setFont(Frame.LABEL_FONT);
+        label.setForeground(Color.WHITE);
         label.setPreferredSize(Frame.LABEL_DIMENSION);
         box.add(label);
         
@@ -57,8 +66,12 @@ public class TitlePanel extends JPanel {
         return box;
     }
     
+    //메소드명: getTitleToSave
+    //입력: 없음
+    //출력: 저장될 파일의 이름을 반환한다.
+    //부수효과: 없음
     public String getTitleToSave(){
-        return nameToTextField.get("Title").getText();
+        return nameToTextField.get("Title To Save").getText();
     }
     
 }

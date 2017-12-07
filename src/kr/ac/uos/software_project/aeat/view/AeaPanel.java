@@ -48,7 +48,10 @@ public class AeaPanel extends JPanel {
         nameToTextField = new HashMap<>();
         initComponents();
     }
-
+    //메소드명: initComponents
+    //입력: 없음
+    //출력: 없음
+    //부수효과: 각각의 박스를 만들어 현재 클래스(AeaPanel)에 추가한다.
     private void initComponents() {
         this.add(createRecord("aeaId"));
         this.add(createRecord("issuer"));
@@ -74,7 +77,11 @@ public class AeaPanel extends JPanel {
         ComboBoxModel comboBoxModelAEAType = new DefaultComboBoxModel(AEATypeItems.toArray());
         ((JComboBox) nameToTextField.get("aeaType")).setModel(comboBoxModelAEAType);        
     }
-
+    
+    //메소드명: createRecord
+    //입력: Box의 이름 name
+    //출력: Label과 TextField를 가진 box를 반환
+    //부수효과: 입력받은 name으로 만든 Lable과 TextField를 가진 box를 만든다
     private Box createRecord(String name) {
         Box box = Box.createHorizontalBox();
         box.setBorder(new EmptyBorder(5, 10, 5, 10));
@@ -91,7 +98,11 @@ public class AeaPanel extends JPanel {
         nameToTextField.put(name, textField);
         return box;
     }
-
+    
+    //메소드명: createComboBoxRecord
+    //입력: Box의 이름
+    //출력: Label과 ComboBox를 가진 box를 반환
+    //부수효과: 입력받은 name으로 만든 Lable과 ComboBox를 가진 box를 만든다
     private Box createComboBoxRecord(String name) {
         Box box = Box.createHorizontalBox();
         box.setBorder(new EmptyBorder(5, 10, 5, 10));
@@ -108,6 +119,11 @@ public class AeaPanel extends JPanel {
         nameToTextField.put(name, comboBox);
         return box;
     }
+    
+    //메소드명: createRadioButtonRecord
+    //입력: Box의 이름 name
+    //출력: Label과 RadioButton을 가진 Box를 반환
+    //부수효과: 입력받은 name으로 만든 Label과 RadioButton을 가진 Box를 만든다.
     private Box createRadioButtonRecord(String name){
         Box box = Box.createHorizontalBox();
         box.setBorder(new EmptyBorder(5, 10, 5, 10));
@@ -127,6 +143,7 @@ public class AeaPanel extends JPanel {
             radiobutton2.setForeground(Color.cyan);
             JRadioButton radiobutton1 = new JRadioButton("VeryLow");
             radiobutton1.setForeground(Color.blue);
+            //만들어진 라디오버튼을 하나의 그룹으로 묶어야 한다.
             ButtonGroup radioGroup = new ButtonGroup();
             radioGroup.add(radiobutton1);
             radioGroup.add(radiobutton2);
@@ -161,12 +178,19 @@ public class AeaPanel extends JPanel {
         
         return box;
     }
+    
+    //함수이름: loadAeat()
+    //입력: 사용자에게 보여줄 내용이 들어 있는 AEATType 객체
+    //출력: 없음
+    //부수효과: 각 이름을 가진 텍스트필드에 입력으로 받은 AEATType의 알맞은 항목을 꺼내와서 형변환 후, 문자열로 출력한다.
     public void loadAeat(AEATType aeat) {
         ((JTextField) nameToTextField.get("aeaId")).setText(aeat.getAEA().get(0).getAeaId());
         ((JTextField) nameToTextField.get("issuer")).setText(aeat.getAEA().get(0).getIssuer());
         ((JComboBox) nameToTextField.get("audience")).setSelectedItem((String)aeat.getAEA().get(0).getAudience().value());
         ((JComboBox) nameToTextField.get("aeaType")).setSelectedItem(aeat.getAEA().get(0).getAeaType().value());
         ((JTextField) nameToTextField.get("refAEAId")).setText(aeat.getAEA().get(0).getRefAEAId());
+        
+//Radio버튼을 이용한 두 항목은 switch문 또는 if문으로 각각하나씩 확인해보는 방식으로 체크를 표시한다.
         String tmp = aeat.getAEA().get(0).getPriority().toString();
         switch(tmp){
             case "0":((JRadioButton)nameToTextField.get("priority1")).setSelected(true);break;
@@ -183,6 +207,10 @@ public class AeaPanel extends JPanel {
         }
     }
     
+    //함수이름: clear
+    //입력: 없음
+    //출력: 없음
+    //부수효과: 모든 box를 비운다.
     public void clear(){
         ((JTextField) nameToTextField.get("aeaId")).setText("");
         ((JTextField) nameToTextField.get("issuer")).setText("");
@@ -192,7 +220,11 @@ public class AeaPanel extends JPanel {
         ((JRadioButton)nameToTextField.get("priority1")).setSelected(true);
         ((JRadioButton)nameToTextField.get("wakeup1")).setSelected(true);
     }
-
+    
+    //함수이름: getAeaId(), getIssuer(), getAudience(), getAeaType(), getPriority(), getWakeup()
+    //입력: 없음
+    //출력: 각 box에 입력되어 있는 것
+    //부수효과: 각 이름을 가진 JComponent에 입력된 값을 문자열또는 short, boolean으로 반환한다.
     public String getAeaId() {
         return ((JTextField) nameToTextField.get("aeaId")).getText();
     }

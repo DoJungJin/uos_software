@@ -59,6 +59,7 @@ public class Frame {
                                               // sender 와 receiver둘다에게 필요하다. 우체통 이름같은 것.
     String MQ_ADDRESS = "tcp://localhost:61616"; // 메시지 브로커 주소
                                               // 메세지를 전달해주는 놈의 주소
+    
     private AeaPanel aeaPanel;
     private HeaderPanel headerPanel;
     private AeatextPanel aeatextPanel;
@@ -119,6 +120,10 @@ public class Frame {
         frame.pack();
     }
     
+    //메소드명: initAeatEditTabPanel
+    //입력: 없음
+    //출력: 첫 화면(AEAT편집)에 대한 필요한 요소를 담은 JPanel
+    //부수효과: AEAT편집창에서 필요한 항목을 JPanel에 담는다.
     private JPanel initAeatEditTabPanel() {
         JScrollPane scroll = new JScrollPane();
         JPanel scrollPanel = new JPanel();
@@ -133,11 +138,11 @@ public class Frame {
         
         
         this.aeaPanel = new AeaPanel(buttonActionListener);
-        scrollPanel.add(aeaPanel);        
+        scrollPanel.add(aeaPanel);   
+        this.aeatextPanel = new AeatextPanel(buttonActionListener);
+        scrollPanel.add(aeatextPanel);     
         this.headerPanel = new HeaderPanel(buttonActionListener);
         scrollPanel.add(headerPanel);
-        this.aeatextPanel = new AeatextPanel(buttonActionListener);
-        scrollPanel.add(aeatextPanel);
         this.liveMediaPanel = new LiveMediaPanel(buttonActionListener);
         scrollPanel.add(liveMediaPanel);
         this.mediaPanel = new MediaPanel(buttonActionListener);
@@ -156,6 +161,10 @@ public class Frame {
         return aeatEditTabPanel;
     }
 
+    //메소드명: initButtonPanel
+    //입력: 없음
+    //출력: AEAT편집창에서 사용될 버튼을 담은 JPanel
+    //부수효과: AEAT편집창에서 필요한 버튼을 JPanel에 담는다.
     private JPanel initButtonPanel() {
         JPanel panel = new JPanel();
         JButton loadButton = new JButton("Load");
@@ -173,6 +182,10 @@ public class Frame {
         return panel;
     }
     
+    //메소드명: init MessageTabPanel
+    //입력: 없음
+    //출력: 메세지창에서 필요한 항목을 담은 JPanel
+    //부수효과: 메세지 창에서 필요한 항목을 JPanel에 담는다.
     private JPanel initMessageTabPanel() {
         JPanel MessagePanel = new JPanel();
         JScrollPane messageScroll = new JScrollPane();
@@ -200,6 +213,10 @@ public class Frame {
         return MessagePanel;
     }
     
+    //메소드명: initConfigTabPanel
+    //입력: 없음
+    //출력: 설정 및 기타창에서 필요한 항목을 담은 JPanel
+    //부수효과: 설정 및 기타창에 필요한 항목을 JPanel에 담는다.
     private JPanel initConfigTabPanel(){
         JPanel ConfigPanel = new JPanel();
         ConfigPanel.setLayout(new BoxLayout(ConfigPanel, BoxLayout.Y_AXIS));
@@ -209,6 +226,10 @@ public class Frame {
         return ConfigPanel;
     }
     
+    //메소드명: initSendMessageButtonPanel
+    //입력: 없음
+    //출력: 메세지 창중 입력창에서 필요한 버튼을 담은 JPanel
+    //부수효과: 메세지 창에서 필요한 버튼을 구성한다
     private JPanel initSendMessageButtonPanel(){
         JPanel panel = new JPanel();
         JButton sendButton = new JButton("메세지 보내기");
@@ -223,6 +244,10 @@ public class Frame {
         return panel;
     }
     
+    //메소드명: initReceiveMessageButtonPanel
+    //입력: 없음
+    //출력: 메세지 창중 수진창에서 필요한 버튼을 담은 JPanel
+    //부수효과: 메시지 창에서 필요한 버튼을 구성한다
     private JPanel initReceiveMessageButtonPanel(){
         JPanel panel = new JPanel();
         JButton receiveButton = new JButton("메세지 받기");
@@ -252,6 +277,10 @@ public class Frame {
         mediaPanel.loadAeat(aeat);
     }
     
+    //메소드명: clear
+    //입력: 없음
+    //출력: 없음
+    //부수효과: 하위 패널의 clear함수를 호출한다.
     public void clear(){
         headerPanel.clear();
         aeaPanel.clear();
@@ -276,14 +305,20 @@ public class Frame {
         aea.setWakeup(aeaPanel.getWakeup());
         
         aeatextPanel.getAeaText(aea);
+        aeatextPanel.getLang(aea);
         
         HeaderType header = new HeaderType();
         TypeType typeType = new TypeType();
         typeType.setValue(headerPanel.getEventCode());
         header.setEventCode(typeType);
+        header.getEventCode().setType(headerPanel.getEventCodeType());
         headerPanel.getEventDesc(header);
+        headerPanel.getLang(header);
         headerPanel.getLocation(header);
+        headerPanel.getLocationType(header);
         header.setEffective(stringToXMLGregorianCalendar(headerPanel.getEffective()));
+        header.setExpires(stringToXMLGregorianCalendar(headerPanel.getExpires()));
+        
         
         MediaType media = new MediaType();
         media.setMediaDesc(mediaPanel.getMediaDesc());
@@ -293,11 +328,13 @@ public class Frame {
         media.setContentType(mediaPanel.getContentType());
         media.setContentLength(mediaPanel.getContentLength());
         media.setMediaAssoc(mediaPanel.getMediaAssoc());
+        media.setLang(mediaPanel.getLang());
         
         LiveMediaType liveMedia = new LiveMediaType();
         liveMediaPanel.getBsid(liveMedia);
         liveMedia.setServiceId(liveMediaPanel.getServiceId());
         liveMediaPanel.getServiceName(liveMedia);
+        liveMediaPanel.getLang(liveMedia);
         
         aea.setHeader(header);
         aea.getMedia().add(media);
@@ -307,11 +344,19 @@ public class Frame {
         return aeat;
     }
     
+    //메소드명: getTitleToSave
+    //입력: 없음
+    //출력: 저장할 파일의 제목을 반환
+    //부수효과: 마샬링하여 xml파일로 저장할 때 파일 제목을 위해 titlePanel의 메소드 호출
     public String getTitleToSave(){
         String title = titlePanel.getTitleToSave();
         return title;
     }
     
+    //메소드명: getTitleToLoad
+    //입력: 없음
+    //출력: 불러올 파일의 제목을 반환
+    //부수효과: 언마샬링할 xml파일을 불러올 때 불러올 파일제목을 알기 위해 filePanel의 메소드 호출
     public String getTitleToLoad(){
         String title = filePanel.getTitleToLoad();
         return title;
@@ -335,46 +380,75 @@ public class Frame {
         return result;
     }
     
+    //메소드명: getMessagePanel
+    //입력: 없음
+    //출력: MessagePanel의 getTextArea메소드 호출
+    //부수효과: 없음
     public String getMesaagePanel(){
         return messagePanel.getTextArea();
     }
     
+    //메소드명: getReceivePanel
+    //입력: 없음
+    //출력: ReceivePanel의 getTextArea메소드 호출
+    //부수효과: 없음
     public String getReceivePanel(){
         return receivePanel.getTextArea();
     }
     
+    //메소드명: clearMessagePanel
+    //입력: 없음
+    //출력: 없음
+    //부수효과: 메세지패널을 clear하기 위해 메소드 호출
     public void clearMessagePanel() {
         messagePanel.clearTextArea();
     }
     
+    //메소드명: clearReceivePanel
+    //입력: 없음
+    //출력: 없음
+    //부수효과: 리시브패널을 clear하기 위해 메소드 호출
     public void clearReceivePanel(){
         receivePanel.clearTextArea();
     }
     
+    //메소드명: refresh
+    //입력: 없음
+    //출력: 없음
+    //부수효과: 새로운 파일이 저장되었을때 파일 목록을 새로 불러오기 위한 메소드 호출
     public void refresh(){
         System.out.println("프레임에서 새로고침 실행");
         filePanel.refresh();
     }
     
+    //메소드명: sendMessagePanel
+    //입력: 없음
+    //출력: 없음
+    //부수효과: 메세지 패널에 있는 내용을 activeMQ를 통해 메세지를 보내기
     public void sendMessagePanel(){
-
         try {
+            //producer 생성
             ActiveMQProducer producer = new ActiveMQProducer(MQ_ADDRESS,messagePanel);
             // Send Message to Destination
             
+            //메세지 패널에 있는 문자열 가져오기
             String text = messagePanel.getTextArea();
             
             producer.sendMessageTo(text, DESTIANTION_EXAM,messagePanel);
             
-
-            Thread.sleep(2000);
+            Thread.sleep(100); // 필요한가?
             producer.closeConnection();
         } catch (InterruptedException ex) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
     
+    //메소드명: receiveMessagePanel
+    //입력: 없음
+    //출력: 없음
+    //부수효과: activeMQ를 통해 메세지를 받음
     public void receiveMessagePanel(){
+            //consumer 생성
             ActiveMQConsumer consumer = new ActiveMQConsumer(MQ_ADDRESS, receivePanel);
 
             // Set consumer Destination
@@ -383,14 +457,19 @@ public class Frame {
         
     }
     
+    //메소드명: configDestination
+    //입력: 없음
+    //출력: 없음
+    //부수효과: configPanel에 있는 Destination값을 가져와 DESTIANTION값 설정
     public void configDestination(){
         DESTIANTION_EXAM = configPanel.getDestination();
     }
     
+    //메소드명: configBroker
+    //입력: 없음
+    //출력: 없음
+    //부수효과: configPanel에 있는 Broker값을 가져와 MQ_ADDRESS값 설정
     public void configBroker(){
-        MQ_ADDRESS = configPanel.getDestination();
+        MQ_ADDRESS = configPanel.getBroker();
     }
-    
-    
-    
 }
